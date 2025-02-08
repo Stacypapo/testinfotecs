@@ -7,8 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	//"net/http"
-	//"encoding/json"
 )
 
 // SendMoney выполняет перевод средств
@@ -27,11 +25,13 @@ func SendMoney(c *gin.Context, db *gorm.DB) {
 		c.JSON(400, gin.H{"error": "Invalid request"})
 		return
 	}
-
+	if transaction.Amount <= 0 {
+		c.JSON(400, gin.H{"error": "invalid value"})
+		return
+	}
 	err := db.Transaction(func(tx *gorm.DB) error {
 		var sender, receiver models.Wallet
 
-		// Проверяем наличие кошельков
 		if err := tx.Where("address = ?", transaction.From).First(&sender).Error; err != nil {
 			c.JSON(404, gin.H{"error": "Sender wallet not found"})
 			return err
@@ -41,13 +41,11 @@ func SendMoney(c *gin.Context, db *gorm.DB) {
 			return err
 		}
 
-		// Проверяем баланс
 		if sender.Balance < transaction.Amount {
 			c.JSON(400, gin.H{"error": "Insufficient funds"})
 			return fmt.Errorf("insufficient funds")
 		}
 
-		// Обновляем баланс кошельков
 		sender.Balance -= transaction.Amount
 		receiver.Balance += transaction.Amount
 
@@ -58,7 +56,6 @@ func SendMoney(c *gin.Context, db *gorm.DB) {
 			return err
 		}
 
-		// Сохраняем транзакцию
 		if err := tx.Create(&transaction).Error; err != nil {
 			return err
 		}
