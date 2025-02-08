@@ -10,15 +10,12 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine, db *gorm.DB) {
-	//r.HandleFunc("/api/send", handlers.SendMoney).Methods("POST")
-	//r.HandleFunc("/api/transactions", handlers.GetLastTransactions).Methods("GET")
-	//r.HandleFunc("/api/wallet/{address}/balance", handlers.GetBalance).Methods("GET")
-	//r.LoadHTMLGlob("templates/*")
-	//r.Static("/static", "./static")
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, "abc")
 	})
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.POST("/api/send", func(c *gin.Context) {
 		controllers.SendMoney(c, db)
