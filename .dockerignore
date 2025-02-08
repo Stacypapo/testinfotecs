@@ -1,0 +1,7 @@
+/vendor
+/.git
+/.github
+/.idea
+*.log
+*.swp
+*.swo

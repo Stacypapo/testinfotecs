@@ -1,0 +1,18 @@
+# Операционные системы
+.DS_Store
+Thumbs.db
+
+# Go
+*.exe
+*.log
+*.test
+*.out
+*.so
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Секретные файлы
+.env
